@@ -1,3 +1,4 @@
+use std::fmt;
 use std::str::FromStr;
 
 use structopt::StructOpt;
@@ -12,6 +13,20 @@ enum Toolchain {
         patch: usize,
     },
     Master,
+}
+
+impl fmt::Display for Toolchain {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use self::Toolchain::*;
+        match *self {
+            Version {
+                major,
+                minor,
+                patch,
+            } => write!(f, "{}.{}.{}", major, minor, patch),
+            Master => write!(f, "master"),
+        }
+    }
 }
 
 /// A command error.
@@ -60,5 +75,7 @@ enum Args {
 
 fn main() {
     let opt = Args::from_args();
-    println!("{:?}", opt);
+    match opt {
+        Args::Update { toolchain } => println!("{}", toolchain),
+    }
 }
