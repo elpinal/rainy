@@ -74,8 +74,7 @@ enum Args {
 }
 
 fn main() {
-    let opt = Args::from_args();
-    match opt {
+    match Args::from_args() {
         Args::Update { toolchain } => println!("{}", toolchain),
     }
 }
