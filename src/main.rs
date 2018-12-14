@@ -2,12 +2,37 @@ use std::str::FromStr;
 
 use structopt::StructOpt;
 
-use failure::Error;
+use failure::{Error, Fail};
 
 #[derive(Debug)]
 enum Toolchain {
-    Version(String),
+    Version {
+        major: usize,
+        minor: usize,
+        patch: usize,
+    },
     Master,
+}
+
+/// A command error.
+#[derive(Fail, Debug)]
+pub enum CommandError {
+    /// Invalid toolchain.
+    #[fail(display = "invalid toolchain: {}", s)]
+    InvalidToolchain { s: String },
+}
+
+fn parse_version(s: &str) -> Result<Toolchain, Error> {
+    match &s.split('.').collect::<Vec<&str>>()[..] {
+        [x, y, z] => Ok(Toolchain::Version {
+            major: x.parse()?,
+            minor: y.parse()?,
+            patch: z.parse()?,
+        }),
+        _ => Err(Error::from(CommandError::InvalidToolchain {
+            s: s.to_string(),
+        })),
+    }
 }
 
 impl FromStr for Toolchain {
@@ -16,7 +41,7 @@ impl FromStr for Toolchain {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "master" => Ok(Toolchain::Master),
-            _ => Ok(Toolchain::Version(s.to_string())),
+            _ => parse_version(s),
         }
     }
 }
