@@ -1,6 +1,9 @@
 use structopt::StructOpt;
 
 use rainy::toolchain::Toolchain;
+use rainy::update;
+
+use log::info;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "rainy", author = "", version_short = "v")]
@@ -15,7 +18,12 @@ enum Args {
 }
 
 fn main() {
+    env_logger::init();
     match Args::from_args() {
-        Args::Update { toolchain } => println!("{}", toolchain),
+        Args::Update { toolchain } => info!("Specified toolchain: {}", toolchain),
+    }
+    if let Err(e) = update::update() {
+        eprintln!("{}", e);
+        std::process::exit(1);
     }
 }
