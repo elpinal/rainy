@@ -6,3 +6,11 @@
 
 - `RAINY_RAIN_ML_URI`: One can specify where the repository of Rain ML is. If not set, `https://github.com/elpinal/rain-ml` is used as default.
 - `RAINY_RAIN_VM_URI`: One can specify where the repository of Rain VM is. If not set, `https://github.com/elpinal/rain-vm` is used as default.
+
+## Logging
+
+To enable logging, set the `RUST_LOG` environment variable to `rainy` like:
+
+```
+$ RUST_LOG=rainy rainy update master
+```
