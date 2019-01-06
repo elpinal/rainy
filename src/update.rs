@@ -53,8 +53,8 @@ fn clone(src: &str, dest: &Path) -> Result<(), Error> {
     Ok(())
 }
 
-fn pull(dest: &Path) -> Result<(), Error> {
-    let status = git().arg("pull").current_dir(dest).status()?;
+fn pull(src: &str, dest: &Path) -> Result<(), Error> {
+    let status = git().arg("pull").arg(src).current_dir(dest).status()?;
     if !status.success() {
         Err(UpdateError::ExternalCommand {
             name: "git".to_string(),
@@ -68,7 +68,7 @@ fn update_or_clone(src: &str, dest: &Path) -> Result<(), Error> {
     trace!("Connecting: {}", src);
     if dest.exists() {
         trace!("Executing `git pull`.");
-        pull(dest)?;
+        pull(src, dest)?;
         trace!("Finished `git pull`.");
     } else {
         trace!("Executing `git clone`.");
